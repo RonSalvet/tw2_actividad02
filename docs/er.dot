@@ -1,0 +1,27 @@
+digraph ER {
+  graph [rankdir=LR, bgcolor="white", nodesep=0.6, ranksep=0.5, fontname="Arial"];
+  node  [shape=plain, fontname="Arial", fontsize=11];
+  edge  [fontname="Arial", fontsize=11];
+  socios [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="white">
+      <TR><TD COLSPAN="3" BGCOLOR="#1F4E79"><FONT COLOR="white"><B>socios</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT"><B>id</B></TD><TD ALIGN="LEFT">INT UNSIGNED, AUTO_INCREMENT</TD></TR>
+      <TR><TD ALIGN="LEFT">UQ</TD><TD ALIGN="LEFT">nombre</TD><TD ALIGN="LEFT">VARCHAR(80) NOT NULL</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">comunidad</TD><TD ALIGN="LEFT">VARCHAR(60) NOT NULL</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">telefono</TD><TD ALIGN="LEFT">VARCHAR(20) NULL</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">creado_en</TD><TD ALIGN="LEFT">TIMESTAMP</TD></TR>
+    </TABLE>>];
+  productos [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="white">
+      <TR><TD COLSPAN="3" BGCOLOR="#1F4E79"><FONT COLOR="white"><B>productos</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT"><B>id</B></TD><TD ALIGN="LEFT">INT UNSIGNED, AUTO_INCREMENT</TD></TR>
+      <TR><TD ALIGN="LEFT">UQ</TD><TD ALIGN="LEFT">codigo</TD><TD ALIGN="LEFT">VARCHAR(8) NOT NULL</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">nombre</TD><TD ALIGN="LEFT">VARCHAR(80) NOT NULL</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">categoria</TD><TD ALIGN="LEFT">ENUM('Miel','Derivados','Cera')</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">precio</TD><TD ALIGN="LEFT">DECIMAL(10,2), CHECK &gt; 0</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">stock</TD><TD ALIGN="LEFT">INT, CHECK &gt;= 0</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT"><B>socio_id</B></TD><TD ALIGN="LEFT">INT UNSIGNED NOT NULL</TD></TR>
+      <TR><TD></TD><TD ALIGN="LEFT">actualizado_en</TD><TD ALIGN="LEFT">TIMESTAMP</TD></TR>
+    </TABLE>>];
+  socios -> productos [dir=both, arrowtail=tee, arrowhead=crow, label="1 : N\nON DELETE RESTRICT"];
+}

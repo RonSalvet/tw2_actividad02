@@ -1,0 +1,21 @@
+DEMOSTRACIÓN DE INYECCIÓN SQL — productos en la tabla: 36
+==============================================================================
+Condición siempre verdadera
+  entrada del usuario : zzz' OR 1=1 -- -
+  [VULNERABLE] SQL ejecutado: SELECT codigo, nombre, categoria FROM productos WHERE nombre LIKE '%zzz' OR 1=1 -- -%'
+  [VULNERABLE] resultado: 36 filas → ejemplo: CER-MAD | Cera para madera 250 g | Cera
+  [SEGURO    ] consulta preparada: WHERE (p.nombre LIKE :patron OR p.codigo LIKE :patron2) → 0 productos, 0 socios
+==============================================================================
+UNION: robar socios y teléfonos
+  entrada del usuario : zzz' UNION SELECT nombre, comunidad, COALESCE(telefono, '-') FROM socios -- -
+  [VULNERABLE] SQL ejecutado: SELECT codigo, nombre, categoria FROM productos WHERE nombre LIKE '%zzz' UNION SELECT nombre, comunidad, COALESCE(telefono, '-') FROM socios -- -%'
+  [VULNERABLE] resultado: 8 filas → ejemplo: Andrés Chuvirú | Roboré | -
+  [SEGURO    ] consulta preparada: WHERE (p.nombre LIKE :patron OR p.codigo LIKE :patron2) → 0 productos, 0 socios
+==============================================================================
+Comilla suelta (rompe el SQL)
+  entrada del usuario : '
+  [VULNERABLE] SQL ejecutado: SELECT codigo, nombre, categoria FROM productos WHERE nombre LIKE '%'%'
+  [VULNERABLE] resultado: ERROR de MySQL 1064 (la entrada rompió la consulta)
+  [SEGURO    ] consulta preparada: WHERE (p.nombre LIKE :patron OR p.codigo LIKE :patron2) → 0 productos, 0 socios
+==============================================================================
+Tabla productos después de todos los ataques: 36 (antes: 36) → INTACTA
