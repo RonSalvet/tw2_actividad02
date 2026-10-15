@@ -1,0 +1,14 @@
+services:
+  php:
+    build: .
+    image: tw2-php:8.4
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      # Windows:contenedor -> abre http://127.0.0.1:8000
+      - "127.0.0.1:8000:8000"
+    # Parte D de la hoja (catálogo roto): descomenta estas 2 líneas y crea datos/roto.json
+    # environment:
+    #   CATALOGO_ARCHIVO: /app/datos/roto.json
+    command: sh -c "composer dump-autoload && php -S 0.0.0.0:8000 -t public public/index.php"

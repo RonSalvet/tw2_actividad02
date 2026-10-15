@@ -1,0 +1,7 @@
+# Parte D de la hoja: levanta el servidor con un catálogo dañado (datos/roto.json).
+# Uso:      docker compose -f docker-compose.yml -f docker-compose.roto.yml up -d
+# Volver:   docker compose up -d
+services:
+  php:
+    environment:
+      CATALOGO_ARCHIVO: /app/datos/roto.json
