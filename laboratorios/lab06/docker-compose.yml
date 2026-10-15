@@ -1,0 +1,11 @@
+services:
+  php:
+    build: .                 # usa el Dockerfile que está en esta misma carpeta (lab06)
+    image: tw2-php:8.4
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "127.0.0.1:8888:8000"   # Windows:contenedor -> abre http://127.0.0.1:8888
+    command: sh -c "composer dump-autoload && php -S 0.0.0.0:8000 -t public"
+ 
