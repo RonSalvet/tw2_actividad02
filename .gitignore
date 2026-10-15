@@ -1,0 +1,16 @@
+# Dependencias generadas (se recrean con composer dump-autoload)
+vendor/
+
+# Registros de errores de la aplicación
+datos/errores.log
+*.log
+
+# Secretos locales
+.env
+.env.*
+
+# Editores y sistema
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
