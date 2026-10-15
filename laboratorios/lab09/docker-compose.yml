@@ -1,0 +1,49 @@
+# docker-compose.yml — Lab 9: PHP 8.4 + MySQL 8.4 LTS (solo DESARROLLO: las claves están a la vista).
+#   Iniciar:        docker compose up --build
+#   Verificar:      docker compose exec php php verificar.php
+#   Consola MySQL:  docker compose exec mysql mysql -u apicultores -pmiel2026 apicultores
+#   Datos de cero:  docker compose down -v && docker compose up --build   (¡borra la base!)
+#   Si el stack del lab 8 sigue encendido, detenlo antes (usa los mismos puertos 3307 y 8000):  docker compose down
+name: tw2-lab09   # nombre propio del proyecto: no se mezcla con los de otros laboratorios
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: apicultor-mysql
+    environment:
+      MYSQL_DATABASE: apicultores
+      MYSQL_USER: apicultores
+      MYSQL_PASSWORD: miel2026
+      MYSQL_ROOT_PASSWORD: raiz2026
+      TZ: America/La_Paz
+    ports:
+      - "127.0.0.1:3307:3306"   # solo accesible desde tu PC (3307 para no chocar con otro MySQL/XAMPP)
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d:ro   # los .sql se ejecutan en orden la PRIMERA vez
+      - datos_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-praiz2026"]
+      interval: 5s
+      retries: 20
+
+  php:
+    build: .
+    working_dir: /app
+    depends_on:
+      mysql:
+        condition: service_healthy   # PHP arranca cuando MySQL ya está listo
+    environment:
+      # Dentro de Docker, MySQL se llama "mysql" (nombre del servicio) y usa su puerto interno 3306
+      BD_HOST: mysql
+      BD_PUERTO: "3306"
+      BD_NOMBRE: apicultores
+      BD_USUARIO: apicultores
+      BD_CLAVE: miel2026
+    volumes:
+      - .:/app
+    ports:
+      - "127.0.0.1:8000:8000"      # abre http://127.0.0.1:8000
+    command: sh -c "composer dump-autoload && php -S 0.0.0.0:8000 -t public public/index.php"
+
+volumes:
+  datos_mysql:
