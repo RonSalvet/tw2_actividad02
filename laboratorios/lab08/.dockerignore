@@ -1,0 +1,8 @@
+vendor
+.git
+.idea
+.vscode
+Dockerfile
+docker-compose.yml
+datos/errores.log
+HOJA_TRABAJO.md

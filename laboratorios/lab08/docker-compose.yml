@@ -1,0 +1,46 @@
+# Laboratorio 8: PHP + MySQL 8.4. Abre http://127.0.0.1:8000/productos
+# Las credenciales son SOLO para esta base educativa local.
+name: tw2-lab08
+
+services:
+  mysql:
+    image: mysql:8.4
+    command: --character-set-server=utf8mb4
+    environment:
+      MYSQL_ROOT_PASSWORD: raiz2026
+      MYSQL_DATABASE: apicultores
+      MYSQL_USER: apicultores
+      MYSQL_PASSWORD: miel2026
+    volumes:
+      - mysql_lab08:/var/lib/mysql
+      # Se ejecuta SOLO cuando MySQL crea un volumen vacío (primera vez)
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  php:
+    build: .
+    image: tw2-php-mysql:8.4
+    working_dir: /app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Dentro del contenedor, "localhost" sería el propio PHP: la base se llama "mysql".
+      BD_HOST: mysql
+      BD_PUERTO: "3306"
+      BD_NOMBRE: apicultores
+      BD_USUARIO: apicultores
+      BD_CLAVE: miel2026
+    volumes:
+      - .:/app
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: sh -c "composer dump-autoload && php -S 0.0.0.0:8000 -t public public/index.php"
+
+volumes:
+  mysql_lab08:
